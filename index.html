@@ -18,19 +18,25 @@
   }
 
   html, body{
-    height:100%;
+    min-height:100%;
     background:#000000;
-    overflow:hidden;
   }
 
   body{
     font-family: 'Courier New', Consolas, 'Lucida Console', monospace;
     color: var(--green);
     display:flex;
-    align-items:center;
+    align-items:flex-start;
     justify-content:center;
-    padding: 2vh 3vw;
+    padding: 4vh 3vw;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
+
+  
+  body::-webkit-scrollbar{ width: 8px; }
+  body::-webkit-scrollbar-track{ background: #000; }
+  body::-webkit-scrollbar-thumb{ background: rgba(0,255,0,0.35); }
 
   
   body::before{
@@ -61,8 +67,7 @@
   #screen{
     width: 100%;
     max-width: 1200px;
-    height: 94vh;
-    max-height: 900px;
+    min-height: 90vh;
     opacity: 1;
     transition: opacity 0.1s ease-in-out;
   }
@@ -193,19 +198,22 @@
     100%{ opacity:1; }
   }
 
-  
+  /* Mobile: single column, no scrollbars, fit to viewport */
   @media (max-width: 820px){
     body{
-      padding: 3vh 4vw;
+      padding: 3vh 4vw 6vh;
+      align-items: flex-start;
     }
     #screen{
-      height: 96vh;
+      min-height: auto;
     }
     .grid{
       grid-template-columns: 1fr;
-      grid-template-rows: auto auto auto auto;
-      gap: 0.9rem;
-      overflow: hidden;
+      grid-template-rows: auto auto auto auto auto;
+      gap: 1.2rem;
+    }
+    .emblem{
+      min-height: 220px;
     }
     .right{
       align-items:flex-start;
@@ -304,3 +312,4 @@
 
 </body>
 </html>
+
