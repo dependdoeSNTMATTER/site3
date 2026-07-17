@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CARU</title>
+<style>
+  :root{
+    --green: #00FF00;
+    --lime: #39FF14;
+    --glow: 0 0 4px rgba(57,255,20,0.8), 0 0 10px rgba(0,255,0,0.5), 0 0 18px rgba(0,255,0,0.25);
+  }
+
+  *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+  }
+
+  html, body{
+    height:100%;
+    background:#000000;
+    overflow:hidden;
+  }
+
+  body{
+    font-family: 'Courier New', Consolas, 'Lucida Console', monospace;
+    color: var(--green);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 2vh 3vw;
+  }
+
+  
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(0,255,0,0.035),
+      rgba(0,255,0,0.035) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    z-index: 5;
+  }
+
+  
+  body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0) 55%, rgba(0,0,0,0.75) 100%);
+    z-index: 6;
+  }
+
+  #screen{
+    width: 100%;
+    max-width: 1200px;
+    height: 94vh;
+    max-height: 900px;
+    opacity: 1;
+    transition: opacity 0.1s ease-in-out;
+  }
+
+  #screen.blackout{
+    opacity: 0;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+    height:100%;
+  }
+
+  .col{
+    display:flex;
+    flex-direction:column;
+    min-height:0;
+  }
+
+  .left{
+    align-items:flex-start;
+    justify-content:flex-start;
+  }
+
+  .right{
+    align-items:flex-end;
+    justify-content: space-between;
+    text-align:right;
+  }
+
+  pre{
+    font-family: inherit;
+    line-height:1.05;
+    white-space:pre;
+    text-shadow: var(--glow);
+    font-size: clamp(0.42rem, 1vw, 0.72rem);
+  }
+
+  .title-art{
+    color: var(--lime);
+    letter-spacing: 0;
+    margin-bottom: 1.1rem;
+  }
+
+  .coords-box{
+    border: 1px solid rgba(0,255,0,0.55);
+    padding: 0.5rem 0.9rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-shadow: var(--glow);
+    margin-bottom: 1.4rem;
+    background: rgba(0,255,0,0.03);
+    max-width: 100%;
+  }
+
+  .emblem{
+    flex: 1 1 auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    min-height: 0;
+  }
+
+  .emblem pre{
+    font-size: clamp(0.5rem, 1.5vw, 1.05rem);
+    text-align:center;
+    color: var(--green);
+  }
+
+  .bottom-left-text{
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    max-width: 34ch;
+    text-shadow: var(--glow);
+  }
+
+  .right-top{
+    font-size: 1rem;
+    letter-spacing: 0.03em;
+    text-shadow: var(--glow);
+    max-width: 30ch;
+  }
+
+  .right-sub{
+    margin-top: 0.6rem;
+    font-size: 0.85rem;
+    opacity: 0.85;
+    text-shadow: var(--glow);
+  }
+
+  .right-sig{
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-shadow: var(--glow);
+    opacity: 0.8;
+  }
+
+  .cursor{
+    display:inline-block;
+    width: 0.55em;
+    background: var(--green);
+    box-shadow: var(--glow);
+    animation: blinkcursor 1s steps(1) infinite;
+    margin-left: 2px;
+  }
+
+  @keyframes blinkcursor{
+    0%, 50%{ opacity:1; }
+    50.01%, 100%{ opacity:0; }
+  }
+
+  .reveal{
+    opacity:0;
+  }
+
+  .reveal.show{
+    opacity:1;
+    animation: flickerin 0.25s steps(2, end);
+  }
+
+  @keyframes flickerin{
+    0%{ opacity:0; }
+    40%{ opacity:0.4; }
+    60%{ opacity:0.1; }
+    100%{ opacity:1; }
+  }
+
+  
+  @media (max-width: 820px){
+    body{
+      padding: 3vh 4vw;
+    }
+    #screen{
+      height: 96vh;
+    }
+    .grid{
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto auto auto;
+      gap: 0.9rem;
+      overflow: hidden;
+    }
+    .right{
+      align-items:flex-start;
+      text-align:left;
+    }
+    .title-art{
+      font-size: clamp(0.3rem, 2.1vw, 0.5rem);
+    }
+    .coords-box{
+      font-size: 0.6rem;
+    }
+    .emblem pre{
+      font-size: clamp(0.32rem, 2.6vw, 0.6rem);
+    }
+    .bottom-left-text, .right-top{
+      font-size: 0.75rem;
+      max-width: none;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div id="screen">
+  <div class="grid">
+
+    <div class="col left">
+      <pre class="title-art reveal" id="el-title">▄████▄   ▄▄▄       ██▀███   █     ██ 
+▒██▀ ▀█  ▒████▄    ▓██ ▒ ██▒ ██  ▓██▒
+▒▓█    ▄ ▒██  ▀█▄  ▓██ ░▄█ ▒▓██  ▒██░
+▒▓▓▄ ▄██▒░██▄▄▄▄██ ▒██▀▀█▄  ▓▓█  ░██░
+▒ ▓███▀ ░ ▓█   ▓██▒░██▓ ▒██▒▒▒█████▓ 
+░ ░▒ ▒  ░ ▒▒   ▓▒█░░ ▒▓ ░▒▓░░▒▓▒ ▒ ▒ 
+  ░  ▒     ▒   ▒▒ ░  ░▒ ░ ▒░░░▒░ ░ ░ 
+░          ░   ▒     ░░   ░  ░░░ ░ ░ 
+░ ░            ░  ░   ░        ░     
+░                                    </pre>
+
+      <div class="coords-box reveal" id="el-coords">14:44 21:21(2х) 18:18 14:14 03:03 15:26 12:12 03:59 04:11 22:22 12:02(2х) 21:45</div>
+
+      <div class="emblem reveal" id="el-emblem">
+<pre>                                       
+      @         @            @         @     
+      @      @@                @@      @     
+      @   @@                      @@   @     
+      @ @                            @ @     
+      @                                @     
+      @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@     
+      @                                @     
+      @                                @     
+      @ @                            @ @     
+      @   @@                      @@   @     
+      @      @@                @@      @     
+      @         @            @         @     </pre>
+      </div>
+
+      <div class="bottom-left-text reveal" id="el-bl">Hi. If you take the test, you'll find answers to all your questions.<span class="cursor"></span></div>
+    </div>
+
+    <div class="col right">
+      <div>
+        <div class="right-top reveal" id="el-rt">How much total time do we have left?</div>
+        <div class="right-sub reveal" id="el-rs">Good luck!(caru)</div>
+      </div>
+      <div class="right-sig reveal" id="el-sig">10 December</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  
+  const sequence = ['el-title','el-coords','el-emblem','el-bl','el-rt','el-rs','el-sig'];
+  sequence.forEach((id, i) => {
+    setTimeout(() => {
+      const node = document.getElementById(id);
+      if(node) node.classList.add('show');
+    }, 220 * i + 150);
+  });
+
+  
+  const screen = document.getElementById('screen');
+  function blinkCycle(){
+    screen.classList.remove('blackout');
+    setTimeout(() => {
+      screen.classList.add('blackout');
+    }, 5000);
+  }
+  
+  const bootDelay = 220 * sequence.length + 600;
+  setTimeout(() => {
+    blinkCycle();
+    setInterval(blinkCycle, 7000);
+  }, bootDelay);
+</script>
+
+</body>
+</html>
